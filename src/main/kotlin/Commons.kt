@@ -39,3 +39,14 @@ interface Listener {
     fun onPreCheckoutQuery(preCheckoutQuery: PreCheckoutQuery, telegramClient: TelegramClient) {}
     fun onShippingQuery(shippingQuery: ShippingQuery, telegramClient: TelegramClient) {}
 }
+
+/**
+ * Options for creating bots.
+ *
+ * @property token Bot token
+ * @property runCommandsThroughOnMessage Should commands be run through onMessage event?
+ */
+data class BotCreationOptions(
+    val token: String,
+    val runCommandsThroughOnMessage: Boolean = false,
+)

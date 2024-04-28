@@ -11,14 +11,15 @@ import org.telegram.telegrambots.meta.generics.TelegramClient
 /**
  * Class for creating long-polling bots using Telegram Bot API
  */
-class LongPollingBot(private val botToken: String) {
-    private val telegramClient: TelegramClient = OkHttpTelegramClient(botToken)
+class LongPollingBot(private val options: BotCreationOptions) {
+    private val telegramClient: TelegramClient = OkHttpTelegramClient(this.options.token)
     private val application = TelegramBotsLongPollingApplication()
     private val listeners: MutableList<Listener> = mutableListOf()
     private lateinit var botSession: BotSession
 
     /**
-     * This bot's command manager. Commands run first, before any other listener
+     * This bot's command manager.
+     * Commands run first, before any other listener (change with [BotCreationOptions.runCommandsThroughOnMessage])
      */
     val commandManager = CommandManager(this.telegramClient)
 
@@ -41,7 +42,7 @@ class LongPollingBot(private val botToken: String) {
      * Starts the bot session.
      */
     fun start() {
-        botSession = application.registerBot(this.botToken, Consumer(this))
+        botSession = application.registerBot(this.options.token, Consumer(this))
         botSession.start()
     }
 
@@ -50,7 +51,7 @@ class LongPollingBot(private val botToken: String) {
      */
     fun stop() {
         botSession.stop()
-        application.unregisterBot(botToken)
+        application.unregisterBot(this.options.token)
     }
 
     private class Consumer(private val bot: LongPollingBot) : LongPollingUpdateConsumer {
