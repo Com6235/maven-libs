@@ -1,1 +1,1 @@
-rootProject.name = "tgBotter"
+rootProject.name = "tgbotter"
