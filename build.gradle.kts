@@ -35,6 +35,12 @@ kotlin {
     jvmToolchain(21)
 }
 
+tasks.register<Jar>("dokkaJavadocJar") {
+    dependsOn(tasks.dokkaJavadoc)
+    from(tasks.dokkaJavadoc.flatMap { it.outputDirectory })
+    archiveClassifier.set("javadoc")
+}
+
 idea {
     module {
         isDownloadJavadoc = true
@@ -42,12 +48,24 @@ idea {
     }
 }
 
+configurations {
+    create("javadoc")
+}
+
+val jdFile = layout.buildDirectory.file("libs/$name-$version-javadoc.jar")
+val jdArtifact = artifacts.add("javadoc", jdFile.get().asFile) {
+    type = "jar"
+    builtBy("dokkaJavadocJar")
+}
+
 publishing {
     publications {
-        create<MavenPublication>("maven") {
+        create<MavenPublication>("kotlin") {
             from(components["kotlin"])
+            artifact(jdArtifact)
         }
     }
+
     repositories {
         maven {
             name = "GitHubPackages"

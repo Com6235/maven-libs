@@ -1,4 +1,4 @@
-name: Publish package to the Github Pages
+name: Publish package to the Github Packages
 on:
   push:
     branches:
