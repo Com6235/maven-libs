@@ -43,6 +43,12 @@ idea {
 }
 
 publishing {
+    publications {
+        create<MavenPublication>("mavan") {
+            println(components)
+            from(components["java"])
+        }
+    }
     repositories {
         maven {
             name = "GitHubPackages"
