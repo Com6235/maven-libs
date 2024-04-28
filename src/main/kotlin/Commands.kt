@@ -8,7 +8,7 @@ import org.telegram.telegrambots.meta.generics.TelegramClient
  * Manager for all commands. Runs commands first, before any other event
  */
 class CommandManager(private val telegramClient: TelegramClient) {
-    internal val handle = Handle(telegramClient)
+    internal val handle = Handle(this.telegramClient)
 
     /**
      * Adds a [Command] to bot's command list. Does not update the menu in Telegram.
@@ -26,10 +26,7 @@ class CommandManager(private val telegramClient: TelegramClient) {
         override fun onMessage(message: Message, telegramClient: TelegramClient) {
             val command = message.text.split(" ")
             val handler = commands.firstOrNull { "/" + it.name == command[0] } ?: return
-            handler.handler(CommandHandler(message,
-                command.subList(1, command.size).toTypedArray(),
-                telegramClient))
-
+            handler.handler(CommandHandler(message, telegramClient))
         }
 
         companion object {
@@ -50,8 +47,7 @@ data class Command(val name: String, val handler: CommandHandler.() -> Unit)
  * Class, that is given to all commands.
  *
  * @property message Message with the command
- * @property args Command arguments (anything after /command)
  * @property telegramClient Client of the bot
  */
 @EqualsAndHashCode
-data class CommandHandler(val message: Message, val args: Array<String>, val telegramClient: TelegramClient)
+data class CommandHandler(val message: Message, val telegramClient: TelegramClient)
