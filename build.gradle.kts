@@ -18,9 +18,10 @@ repositories {
 dependencies {
     testImplementation(kotlin("test"))
 
-    implementation("org.telegram:telegrambots-longpolling:7.2.1")
-    implementation("org.telegram:telegrambots-webhook:7.2.1")
-    implementation("org.telegram:telegrambots-client:7.2.1")
+    api("org.telegram:telegrambots-longpolling:7.2.1")
+    api("org.telegram:telegrambots-webhook:7.2.1")
+    api("org.telegram:telegrambots-client:7.2.1")
+    api("org.telegram:telegrambots-meta:7.2.1")
 
     implementation("org.slf4j:slf4j-api:2.0.13")
 }
