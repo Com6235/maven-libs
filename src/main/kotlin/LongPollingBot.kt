@@ -62,11 +62,13 @@ class LongPollingBot(private val options: BotCreationOptions) {
         }
 
         fun consume(update: Update) {
-            if (update.hasMessage() &&
-                update.message.hasText() &&
-                update.message.text.startsWith("/")
-                ) { bot.getListeners().first().onMessage(update.message, bot.telegramClient) }
-            bot.getListeners().forEach {
+            if (update.hasMessage() && update.message.hasText() && update.message.text.startsWith("/")) {
+                bot.getListeners().first().onMessage(update.message, bot.telegramClient)
+                if (!bot.options.runCommandsThroughOnMessage) {
+                    return
+                }
+            }
+            bot.getListeners().subList(1, bot.getListeners().size).forEach {
                 when {
                     update.hasBusinessConnection() ->  it.onBusinessConnection(update.businessConnection, bot.telegramClient)
                     update.hasBusinessMessage() ->  it.onBusinessMessage(update.businessMessage, bot.telegramClient)
