@@ -6,6 +6,7 @@ plugins {
     id("org.jetbrains.dokka") version "1.9.20"
     idea
     `maven-publish`
+    signing
 }
 
 group = "io.github.com6235"
@@ -75,6 +76,32 @@ publishing {
             from(components["kotlin"])
             artifact(jdArtifact)
             artifact(srcArtifact)
+            pom {
+                packaging = "jar"
+                groupId = group.toString()
+                artifactId = project.name
+                version = project.version.toString()
+                name = "${group}:${project.name}"
+                description = "A framework for creating Telegram bots with ease. Made using official Telegram API"
+                url = "https://github.com/Com6235/tgBotter"
+                licenses {
+                    license {
+                        name = "MIT License"
+                        url = "https://opensource.org/license/mit"
+                    }
+                }
+                developers {
+                    developer {
+                        id = "com6235"
+                        name = "Com6235"
+                    }
+                }
+                scm {
+                    connection = "scm:git:git://github.com/Com6235/tgBotter.git"
+                    developerConnection = "scm:git:ssh://github.com:Com6235/tgBotter.git"
+                    url = "https://github.com/Com6235/tgBotter"
+                }
+            }
         }
     }
 
@@ -88,4 +115,9 @@ publishing {
             }
         }
     }
+}
+
+signing {
+    useGpgCmd()
+    sign(publishing.publications["kotlin"])
 }
