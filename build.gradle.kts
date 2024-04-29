@@ -39,6 +39,11 @@ tasks.register<Jar>("dokkaJavadocJar") {
     archiveClassifier.set("javadoc")
 }
 
+tasks.register<Jar>("sourcesJar") {
+    from(sourceSets.main.get().allSource)
+    archiveClassifier.set("sources")
+}
+
 idea {
     module {
         isDownloadJavadoc = true
@@ -48,6 +53,7 @@ idea {
 
 configurations {
     create("javadoc")
+    create("sources")
 }
 
 val jdFile = layout.buildDirectory.file("libs/$name-$version-javadoc.jar")
@@ -56,11 +62,18 @@ val jdArtifact = artifacts.add("javadoc", jdFile.get().asFile) {
     builtBy("dokkaJavadocJar")
 }
 
+val srcFile = layout.buildDirectory.file("libs/$name-$version-sources.jar")
+val srcArtifact = artifacts.add("sources", srcFile.get().asFile) {
+    type = "jar"
+    builtBy("sourcesJar")
+}
+
 publishing {
     publications {
         create<MavenPublication>("kotlin") {
             from(components["kotlin"])
             artifact(jdArtifact)
+            artifact(srcArtifact)
         }
     }
 
