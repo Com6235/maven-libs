@@ -14,13 +14,6 @@ class CommandManager(private val telegramClient: TelegramClient) {
      */
     fun addCommand(command: Command) = Handle.commands.add(command)
 
-    /**
-     * Removes a [Command] from bot's command list. Requires [command] to be THE SAME variable (not command) that was added
-     *
-     * @see addCommand
-     */
-    fun removeCommand(command: Command) = Handle.commands.remove(command)
-
     internal class Handle(private val telegramClient: TelegramClient) : Listener {
         override fun onMessage(message: Message, telegramClient: TelegramClient) {
             val command = message.text.split(" ")
