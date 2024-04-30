@@ -4,9 +4,10 @@ import org.telegram.telegrambots.client.okhttp.OkHttpTelegramClient
 import org.telegram.telegrambots.longpolling.BotSession
 import org.telegram.telegrambots.longpolling.TelegramBotsLongPollingApplication
 import org.telegram.telegrambots.longpolling.interfaces.LongPollingUpdateConsumer
-import org.telegram.telegrambots.longpolling.util.LongPollingSingleThreadUpdateConsumer
 import org.telegram.telegrambots.meta.api.objects.Update
 import org.telegram.telegrambots.meta.generics.TelegramClient
+import java.util.concurrent.Executor
+import java.util.concurrent.Executors
 
 /**
  * Class for creating long-polling bots using Telegram Bot API
@@ -55,9 +56,11 @@ class LongPollingBot(private val options: BotCreationOptions) {
     }
 
     private class Consumer(private val bot: LongPollingBot) : LongPollingUpdateConsumer {
+        val updatesProcessorExecutor: Executor = Executors.newSingleThreadExecutor()
+
         override fun consume(updates: List<Update>) {
             updates.forEach {
-                LongPollingSingleThreadUpdateConsumer.updatesProcessorExecutor.execute { consume(it) }
+                updatesProcessorExecutor.execute { consume(it) }
             }
         }
 

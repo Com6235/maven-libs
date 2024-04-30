@@ -1,6 +1,5 @@
 package io.github.com6235.tgbotter
 
-import lombok.*
 import org.telegram.telegrambots.meta.api.objects.message.Message
 import org.telegram.telegrambots.meta.generics.TelegramClient
 
@@ -34,20 +33,3 @@ class CommandManager(private val telegramClient: TelegramClient) {
         }
     }
 }
-
-/**
- * Class for commands
- *
- * @property name Name of the command, so bot will be able to identify it
- * @property handler Command handler
- */
-data class Command(val name: String, val handler: CommandHandler.() -> Unit)
-
-/**
- * Class, that is given to all commands.
- *
- * @property message Message with the command
- * @property telegramClient Client of the bot
- */
-@EqualsAndHashCode
-data class CommandHandler(val message: Message, val telegramClient: TelegramClient)
