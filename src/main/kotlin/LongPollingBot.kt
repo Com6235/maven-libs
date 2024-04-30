@@ -24,7 +24,7 @@ class LongPollingBot(private val options: BotCreationOptions) {
     val commandManager = CommandManager(this.telegramClient)
 
     init {
-        this.listeners.addFirst(commandManager.handle)
+        this.listeners.add(commandManager.handle)
     }
 
     /**
@@ -32,7 +32,7 @@ class LongPollingBot(private val options: BotCreationOptions) {
      *
      * @see Listener
      */
-    fun addListener(listener: Listener) { this.listeners.addLast(listener) }
+    fun addListener(listener: Listener) { this.listeners.add(listener) }
     internal fun getListeners(): MutableList<Listener> {
         val s = mutableListOf<Listener>(); s.addAll(this.listeners)
         return s
