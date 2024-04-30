@@ -118,6 +118,8 @@ publishing {
 }
 
 signing {
-    useGpgCmd()
-    sign(publishing.publications["kotlin"])
+    if (System.getenv("IS_CI") == null) {
+        useGpgCmd()
+        sign(publishing.publications["kotlin"])
+    }
 }
