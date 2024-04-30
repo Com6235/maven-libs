@@ -2,7 +2,6 @@ import java.net.URI
 
 plugins {
     kotlin("jvm") version "1.9.23"
-    id("io.freefair.lombok") version "8.6"
     id("org.jetbrains.dokka") version "1.9.20"
     idea
     `maven-publish`
