@@ -12,7 +12,7 @@ class CommandManager(private val telegramClient: TelegramClient) {
     /**
      * Adds a [Command] to bot's command list. Does not update the menu in Telegram.
      */
-    fun addCommand(command: Command) = Handle.commands.add(command)
+    fun addCommand(vararg command: Command) = Handle.commands.addAll(command)
 
     internal class Handle(private val telegramClient: TelegramClient) : Listener {
         override fun onMessage(message: Message, telegramClient: TelegramClient) {

@@ -36,7 +36,7 @@ class LongPollingBot(private val options: BotCreationOptions) {
      *
      * @see Listener
      */
-    fun addListener(listener: Listener) { this.listeners.add(listener) }
+    fun addListener(vararg listener: Listener) { this.listeners.addAll(listener) }
     internal fun getListeners(): MutableList<Listener> {
         val s = mutableListOf<Listener>(); s.addAll(this.listeners)
         return s
