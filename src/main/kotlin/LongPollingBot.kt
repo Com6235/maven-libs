@@ -81,7 +81,7 @@ class LongPollingBot(private val options: BotCreationOptions) {
         fun consume(update: Update) {
             if (update.hasMessage() && update.message.hasText() && update.message.text.startsWith("/")) {
                 bot.getListeners().first().onMessage(update.message, bot.telegramClient)
-                logUpdate(update.updateId, "Command")
+                afterUpdate(update, "Command", null)
                 if (!bot.options.runCommandsThroughOnMessage) {
                     return
                 }
@@ -90,83 +90,85 @@ class LongPollingBot(private val options: BotCreationOptions) {
                 when {
                     update.hasBusinessConnection() -> {
                         it.onBusinessConnection(update.businessConnection, bot.telegramClient)
-                        logUpdate(update.updateId, "BusinessConnection")
+                        afterUpdate(update, "BusinessConnection", it)
                     }
                     update.hasBusinessMessage() -> {
                         it.onBusinessMessage(update.businessMessage, bot.telegramClient)
-                        logUpdate(update.updateId, "BusinessMessage")
+                        afterUpdate(update, "BusinessMessage", it)
                     }
                     update.hasCallbackQuery() -> {
                         it.onCallbackQuery(update.callbackQuery, bot.telegramClient)
-                        logUpdate(update.updateId, "CallbackQuery")
+                        afterUpdate(update, "CallbackQuery", it)
                     }
                     update.hasChannelPost() -> {
                         it.onChannelPost(update.channelPost, bot.telegramClient)
-                        logUpdate(update.updateId, "ChannelPost")
+                        afterUpdate(update, "ChannelPost", it)
                     }
                     update.hasChatJoinRequest() -> {
                         it.onChatJoinRequest(update.chatJoinRequest, bot.telegramClient)
-                        logUpdate(update.updateId, "ChatJoinRequest")
+                        afterUpdate(update, "ChatJoinRequest", it)
                     }
                     update.hasChatMember() -> {
                         it.onChatMember(update.chatMember, bot.telegramClient)
-                        logUpdate(update.updateId, "ChatMember")
+                        afterUpdate(update, "ChatMember", it)
                     }
                     update.hasChosenInlineQuery() -> {
                         it.onChosenInlineQuery(update.chosenInlineQuery, bot.telegramClient)
-                        logUpdate(update.updateId, "ChosenInlineQuery")
+                        afterUpdate(update, "ChosenInlineQuery", it)
                     }
                     update.hasDeletedBusinessMessage() -> {
                         it.onDeletedBusinessMessage(update.deletedBusinessMessages, bot.telegramClient)
-                        logUpdate(update.updateId, "DeletedBusinessMessage")
+                        afterUpdate(update, "DeletedBusinessMessage", it)
                     }
                     update.hasEditedBusinessMessage() -> {
                         it.onEditedBusinessMessage(update.editedBuinessMessage, bot.telegramClient)
-                        logUpdate(update.updateId, "EditedBusinessMessage")
+                        afterUpdate(update, "EditedBusinessMessage", it)
                     }
                     update.hasEditedChannelPost() -> {
                         it.onEditedChannelPost(update.editedChannelPost, bot.telegramClient)
-                        logUpdate(update.updateId, "EditedChannelPost")
+                        afterUpdate(update, "EditedChannelPost", it)
                     }
                     update.hasEditedMessage() -> {
                         it.onEditedMessage(update.editedMessage, bot.telegramClient)
-                        logUpdate(update.updateId, "EditedMessage")
+                        afterUpdate(update, "EditedMessage", it)
                     }
                     update.hasInlineQuery() -> {
                         it.onInlineQuery(update.inlineQuery, bot.telegramClient)
-                        logUpdate(update.updateId, "InlineQuery")
+                        afterUpdate(update, "InlineQuery", it)
                     }
                     update.hasMessage() -> {
                         it.onMessage(update.message, bot.telegramClient)
-                        logUpdate(update.updateId, "Message")
+                        afterUpdate(update, "Message", it)
                     }
                     update.hasMyChatMember() -> {
                         it.onMyChatMember(update.myChatMember, bot.telegramClient)
-                        logUpdate(update.updateId, "MyChatMember")
+                        afterUpdate(update, "MyChatMember", it)
                     }
                     update.hasPoll() -> {
                         it.onPoll(update.poll, bot.telegramClient)
-                        logUpdate(update.updateId, "Poll")
+                        afterUpdate(update, "Poll", it)
                     }
                     update.hasPollAnswer() -> {
                         it.onPollAnswer(update.pollAnswer, bot.telegramClient)
-                        logUpdate(update.updateId, "PollAnswer")
+                        afterUpdate(update, "PollAnswer", it)
                     }
                     update.hasPreCheckoutQuery() -> {
                         it.onPreCheckoutQuery(update.preCheckoutQuery, bot.telegramClient)
-                        logUpdate(update.updateId, "PreCheckoutQuery")
+                        afterUpdate(update, "PreCheckoutQuery", it)
                     }
                     update.hasShippingQuery() -> {
                         it.onShippingQuery(update.shippingQuery, bot.telegramClient)
-                        logUpdate(update.updateId, "ShippingQuery")
+                        afterUpdate(update, "ShippingQuery", it)
                     }
                 }
             }
         }
 
-        private fun logUpdate(updateId: Int, type: String) {
+        private fun afterUpdate(update: Update, type: String, listener: Listener?) {
+            (listener ?: CommandManager.Handle(bot.telegramClient)).afterUpdate(update, bot.telegramClient)
+
             if (!bot.options.logUpdates) return
-            bot.logger.info("$updateId - $type")
+            bot.logger.info("${update.updateId} - $type")
         }
     }
 }

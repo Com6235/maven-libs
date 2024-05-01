@@ -2,6 +2,7 @@ package io.github.com6235.tgbotter
 
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery
 import org.telegram.telegrambots.meta.api.objects.ChatJoinRequest
+import org.telegram.telegrambots.meta.api.objects.Update
 import org.telegram.telegrambots.meta.api.objects.business.BusinessConnection
 import org.telegram.telegrambots.meta.api.objects.business.BusinessMessagesDeleted
 import org.telegram.telegrambots.meta.api.objects.chatmember.ChatMemberUpdated
@@ -38,4 +39,5 @@ interface Listener {
     fun onPollAnswer(pollAnswer: PollAnswer, telegramClient: TelegramClient) {}
     fun onPreCheckoutQuery(preCheckoutQuery: PreCheckoutQuery, telegramClient: TelegramClient) {}
     fun onShippingQuery(shippingQuery: ShippingQuery, telegramClient: TelegramClient) {}
+    fun afterUpdate(update: Update, telegramClient: TelegramClient) {}
 }
