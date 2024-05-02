@@ -18,7 +18,7 @@ class LongPollingBot(private val options: BotCreationOptions) {
     private val telegramClient: TelegramClient = OkHttpTelegramClient(this.options.token)
     private val application = TelegramBotsLongPollingApplication()
     private val listeners: MutableList<Listener> = mutableListOf()
-    internal val logger = LoggerFactory.getLogger(this::class.java)
+    internal val logger = LoggerFactory.getLogger(options.loggerName)
     private lateinit var botSession: BotSession
 
     /**
