@@ -52,7 +52,7 @@ class LongPollingBot(private val options: BotCreationOptions) {
     /**
      * Starts the bot session.
      */
-    fun start() {
+    fun start(hookStopToShutdown: Boolean = false) {
         try {
             botSession = application.registerBot(this.options.token, Consumer(this))
 
@@ -72,6 +72,12 @@ class LongPollingBot(private val options: BotCreationOptions) {
                 .shortDescription(options.botShortDescription)
                 .build()
             )
+
+            if (hookStopToShutdown) {
+                Runtime.getRuntime().addShutdownHook(Thread {
+                    stop()
+                })
+            }
 
             botSession.start()
             logger.info("Bot started successfully!")
