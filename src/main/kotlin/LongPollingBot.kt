@@ -8,6 +8,9 @@ import org.telegram.telegrambots.longpolling.TelegramBotsLongPollingApplication
 import org.telegram.telegrambots.longpolling.interfaces.LongPollingUpdateConsumer
 import org.telegram.telegrambots.meta.api.methods.commands.DeleteMyCommands
 import org.telegram.telegrambots.meta.api.methods.commands.SetMyCommands
+import org.telegram.telegrambots.meta.api.methods.description.SetMyDescription
+import org.telegram.telegrambots.meta.api.methods.description.SetMyShortDescription
+import org.telegram.telegrambots.meta.api.methods.name.SetMyName
 import org.telegram.telegrambots.meta.api.objects.Update
 import org.telegram.telegrambots.meta.api.objects.commands.BotCommand
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException
@@ -60,6 +63,12 @@ class LongPollingBot(private val options: BotCreationOptions) {
                 }
             }
             telegramClient.execute(SetMyCommands.builder().commands(commandsToSend).build())
+            telegramClient.execute(SetMyName.builder().name(options.botName).build())
+            telegramClient.execute(SetMyName.builder().name(options.botName).build())
+            telegramClient.execute(SetMyDescription.builder().description(options.botDescription).build())
+            telegramClient.execute(SetMyShortDescription.builder().shortDescription(options.botShortDescription)
+                .build()
+            )
 
             botSession.start()
             logger.info("Bot started successfully!")

@@ -11,6 +11,9 @@ import org.telegram.telegrambots.meta.generics.TelegramClient
  */
 data class BotCreationOptions(
     val token: String,
+    val botName: String,
+    val botDescription: String = "",
+    val botShortDescription: String = "",
     val runCommandsThroughOnMessage: Boolean = false,
     val logUpdates: Boolean = false,
     val loggerName: String = LongPollingBot::class.qualifiedName!!,
