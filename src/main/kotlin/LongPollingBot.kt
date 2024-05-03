@@ -63,10 +63,13 @@ class LongPollingBot(private val options: BotCreationOptions) {
                 }
             }
             telegramClient.execute(SetMyCommands.builder().commands(commandsToSend).build())
-            telegramClient.execute(SetMyName.builder().name(options.botName).build())
-            telegramClient.execute(SetMyName.builder().name(options.botName).build())
-            telegramClient.execute(SetMyDescription.builder().description(options.botDescription).build())
-            telegramClient.execute(SetMyShortDescription.builder().shortDescription(options.botShortDescription)
+            if (options.botName != null) telegramClient.execute(SetMyName.builder().name(options.botName).build())
+            if (options.botDescription != null) telegramClient.execute(SetMyDescription.builder()
+                .description(options.botDescription)
+                .build()
+            )
+            if (options.botShortDescription != null) telegramClient.execute(SetMyShortDescription.builder()
+                .shortDescription(options.botShortDescription)
                 .build()
             )
 
