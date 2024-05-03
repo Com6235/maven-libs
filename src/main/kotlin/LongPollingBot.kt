@@ -1,11 +1,15 @@
 package io.github.com6235.tgbotter
 
+import io.github.com6235.tgbotter.CommandManager.Handle.Companion.commands
 import org.slf4j.LoggerFactory
 import org.telegram.telegrambots.client.okhttp.OkHttpTelegramClient
 import org.telegram.telegrambots.longpolling.BotSession
 import org.telegram.telegrambots.longpolling.TelegramBotsLongPollingApplication
 import org.telegram.telegrambots.longpolling.interfaces.LongPollingUpdateConsumer
+import org.telegram.telegrambots.meta.api.methods.commands.DeleteMyCommands
+import org.telegram.telegrambots.meta.api.methods.commands.SetMyCommands
 import org.telegram.telegrambots.meta.api.objects.Update
+import org.telegram.telegrambots.meta.api.objects.commands.BotCommand
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException
 import org.telegram.telegrambots.meta.generics.TelegramClient
 import java.util.concurrent.Executor
@@ -15,7 +19,7 @@ import java.util.concurrent.Executors
  * Class for creating long-polling bots using Telegram Bot API
  */
 class LongPollingBot(private val options: BotCreationOptions) {
-    private val telegramClient: TelegramClient = OkHttpTelegramClient(this.options.token)
+    internal val telegramClient: TelegramClient = OkHttpTelegramClient(this.options.token)
     private val application = TelegramBotsLongPollingApplication()
     private val listeners: MutableList<Listener> = mutableListOf()
     internal val logger = LoggerFactory.getLogger(options.loggerName)
@@ -25,7 +29,7 @@ class LongPollingBot(private val options: BotCreationOptions) {
      * This bot's command manager.
      * Commands run first, before any other listener (change with [BotCreationOptions.runCommandsThroughOnMessage])
      */
-    val commandManager = CommandManager(this.telegramClient)
+    val commandManager = CommandManager(this)
 
     init {
         this.listeners.add(commandManager.handle)
@@ -48,6 +52,15 @@ class LongPollingBot(private val options: BotCreationOptions) {
     fun start() {
         try {
             botSession = application.registerBot(this.options.token, Consumer(this))
+
+            val commandsToSend = mutableListOf<BotCommand>()
+            for (command in commands) {
+                if (commandManager.commandRegex.matchEntire(command.name) != null) {
+                    commandsToSend.add(BotCommand(command.name, command.description))
+                }
+            }
+            telegramClient.execute(SetMyCommands.builder().commands(commandsToSend).build())
+
             botSession.start()
             logger.info("Bot started successfully!")
         } catch (e: TelegramApiException) {
@@ -61,6 +74,7 @@ class LongPollingBot(private val options: BotCreationOptions) {
     fun stop() {
         try {
             botSession.stop()
+            telegramClient.execute(DeleteMyCommands.builder().build())
             application.unregisterBot(this.options.token)
             logger.info("Bot stopped successfully!")
         } catch (e: TelegramApiException) {

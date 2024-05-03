@@ -22,7 +22,7 @@ data class BotCreationOptions(
  * @property name Name of the command, so bot will be able to identify it
  * @property handler Command handler
  */
-data class Command(val name: String, val handler: CommandHandler.() -> Unit)
+data class Command(val name: String, val description: String, val handler: CommandHandler.() -> Unit)
 
 /**
  * Class, that is given to all commands.
