@@ -102,7 +102,7 @@ class LongPollingBot(private val options: BotCreationOptions) {
     }
 
     private class Consumer(private val bot: LongPollingBot) : LongPollingUpdateConsumer {
-        private val updatesProcessorExecutor: Executor = Executors.newSingleThreadExecutor()
+        private val updatesProcessorExecutor: Executor = Executors.newCachedThreadPool()
 
         override fun consume(updates: List<Update>) {
             updates.forEach {
