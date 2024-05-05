@@ -52,7 +52,7 @@ class LongPollingBot(private val options: BotCreationOptions) {
     /**
      * Starts the bot session.
      */
-    fun start(hookStopToShutdown: Boolean = false) {
+    fun start(hookStopToShutdown: Boolean = false, exitOnError: Boolean = true) {
         try {
             botSession = application.registerBot(this.options.token, Consumer(this))
 
@@ -83,6 +83,8 @@ class LongPollingBot(private val options: BotCreationOptions) {
             logger.info("Bot started successfully!")
         } catch (e: TelegramApiException) {
             logger.error("There was an error starting the bot: ${e.message}")
+            stop()
+            if (exitOnError) exitProcess(1)
         }
     }
 
