@@ -1,5 +1,9 @@
 package io.github.com6235.tgbotter
 
+import io.github.com6235.tgbotter.common.Bot
+import io.github.com6235.tgbotter.common.Command
+import io.github.com6235.tgbotter.common.CommandHandler
+import io.github.com6235.tgbotter.common.Listener
 import org.telegram.telegrambots.meta.api.objects.message.Message
 import org.telegram.telegrambots.meta.generics.TelegramClient
 
