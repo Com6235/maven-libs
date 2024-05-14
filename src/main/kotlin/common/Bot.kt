@@ -1,5 +1,6 @@
-package io.github.com6235.tgbotter
+package io.github.com6235.tgbotter.common
 
+import io.github.com6235.tgbotter.CommandManager
 import io.github.com6235.tgbotter.CommandManager.Handle.Companion.commands
 import org.slf4j.LoggerFactory
 import org.telegram.telegrambots.client.okhttp.OkHttpTelegramClient
@@ -16,12 +17,13 @@ import org.telegram.telegrambots.meta.generics.TelegramClient
 abstract class Bot(private val options: BotCreationOptions) {
     internal val telegramClient: TelegramClient = OkHttpTelegramClient(this.options.token)
     protected abstract val application: AutoCloseable
-    protected val listeners: MutableList<Listener> = mutableListOf()
+    private val listeners: MutableList<Listener> = mutableListOf()
     internal val logger = LoggerFactory.getLogger(options.loggerName)
 
     /**
      * This bot's command manager.
-     * Commands run first, before any other listener (change with [BotCreationOptions.runCommandsThroughOnMessage])
+     * Commands run first, before any other listener.
+     * Also commands doesn't run through onMessage event (change with [BotCreationOptions.runCommandsThroughOnMessage])
      */
     val commandManager = CommandManager(this)
 

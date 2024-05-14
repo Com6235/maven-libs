@@ -1,4 +1,4 @@
-package io.github.com6235.tgbotter
+package io.github.com6235.tgbotter.common
 
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery
 import org.telegram.telegrambots.meta.api.objects.ChatJoinRequest
@@ -18,7 +18,7 @@ import org.telegram.telegrambots.meta.generics.TelegramClient
 /**
  * Interface for creating event listeners.
  *
- * After creating your event listener, remember to add them to your [LongPollingBot] using [LongPollingBot.addListener]
+ * After creating your event listener, remember to add them to your [Bot] using [Bot.addListener]
  */
 interface Listener {
     fun onBusinessConnection(businessConnection: BusinessConnection, telegramClient: TelegramClient) {}
