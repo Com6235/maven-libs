@@ -6,7 +6,7 @@ import org.telegram.telegrambots.meta.generics.TelegramClient
 /**
  * Manager for all commands. Runs commands first, before any other event
  */
-class CommandManager(private val bot: LongPollingBot) {
+class CommandManager(private val bot: Bot) {
     internal val handle = Handle(this.bot.telegramClient)
     internal val commandRegex = Regex("[a-z0-9_]+")
 

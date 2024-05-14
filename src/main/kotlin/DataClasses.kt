@@ -13,7 +13,7 @@ data class BotCreationOptions(
     val token: String,
     val botName: String? = null,
     val botDescription: String? = null,
-    val botShortDescription: String ?= null,
+    val botShortDescription: String? = null,
     val runCommandsThroughOnMessage: Boolean = false,
     val logUpdates: Boolean = false,
     val loggerName: String = LongPollingBot::class.qualifiedName!!,
