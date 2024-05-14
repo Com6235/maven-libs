@@ -1,6 +1,5 @@
 package io.github.com6235.tgbotter.common
 
-import io.github.com6235.tgbotter.LongPollingBot
 import org.telegram.telegrambots.meta.api.objects.message.Message
 import org.telegram.telegrambots.meta.generics.TelegramClient
 
@@ -22,7 +21,7 @@ data class BotCreationOptions(
     val botShortDescription: String? = null,
     val runCommandsThroughOnMessage: Boolean = false,
     val logUpdates: Boolean = false,
-    val loggerName: String = LongPollingBot::class.qualifiedName!!,
+    val loggerName: String = Bot::class.qualifiedName!!,
 )
 
 /**
