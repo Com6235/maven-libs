@@ -1,7 +1,8 @@
-package io.github.com6235.tgbotter
+package io.github.com6235.tgbotter.common
 
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery
 import org.telegram.telegrambots.meta.api.objects.ChatJoinRequest
+import org.telegram.telegrambots.meta.api.objects.Update
 import org.telegram.telegrambots.meta.api.objects.business.BusinessConnection
 import org.telegram.telegrambots.meta.api.objects.business.BusinessMessagesDeleted
 import org.telegram.telegrambots.meta.api.objects.chatmember.ChatMemberUpdated
@@ -17,7 +18,7 @@ import org.telegram.telegrambots.meta.generics.TelegramClient
 /**
  * Interface for creating event listeners.
  *
- * After creating your event listener, remember to add them to your [LongPollingBot] using [LongPollingBot.addListener]
+ * After creating your event listener, remember to add them to your [Bot] using [Bot.addListener]
  */
 interface Listener {
     fun onBusinessConnection(businessConnection: BusinessConnection, telegramClient: TelegramClient) {}
@@ -38,4 +39,5 @@ interface Listener {
     fun onPollAnswer(pollAnswer: PollAnswer, telegramClient: TelegramClient) {}
     fun onPreCheckoutQuery(preCheckoutQuery: PreCheckoutQuery, telegramClient: TelegramClient) {}
     fun onShippingQuery(shippingQuery: ShippingQuery, telegramClient: TelegramClient) {}
+    fun afterUpdate(update: Update, telegramClient: TelegramClient) {}
 }

@@ -1,76 +1,57 @@
 package io.github.com6235.tgbotter
 
-import org.slf4j.LoggerFactory
-import org.telegram.telegrambots.client.okhttp.OkHttpTelegramClient
+import io.github.com6235.tgbotter.common.Bot
+import io.github.com6235.tgbotter.common.BotCreationOptions
+import io.github.com6235.tgbotter.common.Listener
 import org.telegram.telegrambots.longpolling.BotSession
 import org.telegram.telegrambots.longpolling.TelegramBotsLongPollingApplication
 import org.telegram.telegrambots.longpolling.interfaces.LongPollingUpdateConsumer
+import org.telegram.telegrambots.meta.api.methods.commands.DeleteMyCommands
 import org.telegram.telegrambots.meta.api.objects.Update
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException
-import org.telegram.telegrambots.meta.generics.TelegramClient
 import java.util.concurrent.Executor
 import java.util.concurrent.Executors
+import kotlin.system.exitProcess
 
 /**
  * Class for creating long-polling bots using Telegram Bot API
  */
-class LongPollingBot(private val options: BotCreationOptions) {
-    private val telegramClient: TelegramClient = OkHttpTelegramClient(this.options.token)
-    private val application = TelegramBotsLongPollingApplication()
-    private val listeners: MutableList<Listener> = mutableListOf()
-    internal val logger = LoggerFactory.getLogger(this::class.java)
+class LongPollingBot(private val options: BotCreationOptions) : Bot(options) {
+    override val application = TelegramBotsLongPollingApplication()
     private lateinit var botSession: BotSession
-
-    /**
-     * This bot's command manager.
-     * Commands run first, before any other listener (change with [BotCreationOptions.runCommandsThroughOnMessage])
-     */
-    val commandManager = CommandManager(this.telegramClient)
-
-    init {
-        this.listeners.add(commandManager.handle)
-    }
-
-    /**
-     * Adds a listener to the bot, so the bot can work with it
-     *
-     * @see Listener
-     */
-    fun addListener(listener: Listener) { this.listeners.add(listener) }
-    internal fun getListeners(): MutableList<Listener> {
-        val s = mutableListOf<Listener>(); s.addAll(this.listeners)
-        return s
-    }
 
     /**
      * Starts the bot session.
      */
-    fun start() {
+    override fun start(autoSetCommands: Boolean, hookStopToShutdown: Boolean, exitOnError: Boolean) {
         try {
             botSession = application.registerBot(this.options.token, Consumer(this))
+            setNameAndCommands(hookStopToShutdown, autoSetCommands)
             botSession.start()
             logger.info("Bot started successfully!")
         } catch (e: TelegramApiException) {
             logger.error("There was an error starting the bot: ${e.message}")
+            stop()
+            if (exitOnError) exitProcess(1)
         }
     }
 
     /**
      * Stops the bot session
      */
-    fun stop() {
+    override fun stop() {
         try {
             botSession.stop()
+            telegramClient.execute(DeleteMyCommands.builder().build())
             application.unregisterBot(this.options.token)
             logger.info("Bot stopped successfully!")
         } catch (e: TelegramApiException) {
             logger.error("There was an error stopping the bot: ${e.message}")
         }
-
     }
 
     private class Consumer(private val bot: LongPollingBot) : LongPollingUpdateConsumer {
-        private val updatesProcessorExecutor: Executor = Executors.newSingleThreadExecutor()
+        private val updatesProcessorExecutor: Executor = Executors.newCachedThreadPool()
 
         override fun consume(updates: List<Update>) {
             updates.forEach {
@@ -81,7 +62,7 @@ class LongPollingBot(private val options: BotCreationOptions) {
         fun consume(update: Update) {
             if (update.hasMessage() && update.message.hasText() && update.message.text.startsWith("/")) {
                 bot.getListeners().first().onMessage(update.message, bot.telegramClient)
-                logUpdate(update.updateId, "Command")
+                afterUpdate(update, "Command", null)
                 if (!bot.options.runCommandsThroughOnMessage) {
                     return
                 }
@@ -90,83 +71,85 @@ class LongPollingBot(private val options: BotCreationOptions) {
                 when {
                     update.hasBusinessConnection() -> {
                         it.onBusinessConnection(update.businessConnection, bot.telegramClient)
-                        logUpdate(update.updateId, "BusinessConnection")
+                        afterUpdate(update, "BusinessConnection", it)
                     }
                     update.hasBusinessMessage() -> {
                         it.onBusinessMessage(update.businessMessage, bot.telegramClient)
-                        logUpdate(update.updateId, "BusinessMessage")
+                        afterUpdate(update, "BusinessMessage", it)
                     }
                     update.hasCallbackQuery() -> {
                         it.onCallbackQuery(update.callbackQuery, bot.telegramClient)
-                        logUpdate(update.updateId, "CallbackQuery")
+                        afterUpdate(update, "CallbackQuery", it)
                     }
                     update.hasChannelPost() -> {
                         it.onChannelPost(update.channelPost, bot.telegramClient)
-                        logUpdate(update.updateId, "ChannelPost")
+                        afterUpdate(update, "ChannelPost", it)
                     }
                     update.hasChatJoinRequest() -> {
                         it.onChatJoinRequest(update.chatJoinRequest, bot.telegramClient)
-                        logUpdate(update.updateId, "ChatJoinRequest")
+                        afterUpdate(update, "ChatJoinRequest", it)
                     }
                     update.hasChatMember() -> {
                         it.onChatMember(update.chatMember, bot.telegramClient)
-                        logUpdate(update.updateId, "ChatMember")
+                        afterUpdate(update, "ChatMember", it)
                     }
                     update.hasChosenInlineQuery() -> {
                         it.onChosenInlineQuery(update.chosenInlineQuery, bot.telegramClient)
-                        logUpdate(update.updateId, "ChosenInlineQuery")
+                        afterUpdate(update, "ChosenInlineQuery", it)
                     }
                     update.hasDeletedBusinessMessage() -> {
                         it.onDeletedBusinessMessage(update.deletedBusinessMessages, bot.telegramClient)
-                        logUpdate(update.updateId, "DeletedBusinessMessage")
+                        afterUpdate(update, "DeletedBusinessMessage", it)
                     }
                     update.hasEditedBusinessMessage() -> {
                         it.onEditedBusinessMessage(update.editedBuinessMessage, bot.telegramClient)
-                        logUpdate(update.updateId, "EditedBusinessMessage")
+                        afterUpdate(update, "EditedBusinessMessage", it)
                     }
                     update.hasEditedChannelPost() -> {
                         it.onEditedChannelPost(update.editedChannelPost, bot.telegramClient)
-                        logUpdate(update.updateId, "EditedChannelPost")
+                        afterUpdate(update, "EditedChannelPost", it)
                     }
                     update.hasEditedMessage() -> {
                         it.onEditedMessage(update.editedMessage, bot.telegramClient)
-                        logUpdate(update.updateId, "EditedMessage")
+                        afterUpdate(update, "EditedMessage", it)
                     }
                     update.hasInlineQuery() -> {
                         it.onInlineQuery(update.inlineQuery, bot.telegramClient)
-                        logUpdate(update.updateId, "InlineQuery")
+                        afterUpdate(update, "InlineQuery", it)
                     }
                     update.hasMessage() -> {
                         it.onMessage(update.message, bot.telegramClient)
-                        logUpdate(update.updateId, "Message")
+                        afterUpdate(update, "Message", it)
                     }
                     update.hasMyChatMember() -> {
                         it.onMyChatMember(update.myChatMember, bot.telegramClient)
-                        logUpdate(update.updateId, "MyChatMember")
+                        afterUpdate(update, "MyChatMember", it)
                     }
                     update.hasPoll() -> {
                         it.onPoll(update.poll, bot.telegramClient)
-                        logUpdate(update.updateId, "Poll")
+                        afterUpdate(update, "Poll", it)
                     }
                     update.hasPollAnswer() -> {
                         it.onPollAnswer(update.pollAnswer, bot.telegramClient)
-                        logUpdate(update.updateId, "PollAnswer")
+                        afterUpdate(update, "PollAnswer", it)
                     }
                     update.hasPreCheckoutQuery() -> {
                         it.onPreCheckoutQuery(update.preCheckoutQuery, bot.telegramClient)
-                        logUpdate(update.updateId, "PreCheckoutQuery")
+                        afterUpdate(update, "PreCheckoutQuery", it)
                     }
                     update.hasShippingQuery() -> {
                         it.onShippingQuery(update.shippingQuery, bot.telegramClient)
-                        logUpdate(update.updateId, "ShippingQuery")
+                        afterUpdate(update, "ShippingQuery", it)
                     }
                 }
             }
         }
 
-        private fun logUpdate(updateId: Int, type: String) {
+        private fun afterUpdate(update: Update, type: String, listener: Listener?) {
+            (listener ?: CommandManager.Handle(bot.telegramClient)).afterUpdate(update, bot.telegramClient)
+
             if (!bot.options.logUpdates) return
-            bot.logger.info("$updateId - $type")
+            bot.logger.info("${update.updateId} - $type")
         }
     }
 }

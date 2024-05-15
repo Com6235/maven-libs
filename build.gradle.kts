@@ -1,7 +1,7 @@
 import java.net.URI
 
 plugins {
-    kotlin("jvm") version "1.9.23"
+    kotlin("jvm") version "1.9.24"
     id("org.jetbrains.dokka") version "1.9.20"
     idea
     `maven-publish`
@@ -9,7 +9,7 @@ plugins {
 }
 
 group = "io.github.com6235"
-version = "1.0.2"
+version = "1.0.3"
 
 repositories {
     mavenCentral()
@@ -18,9 +18,9 @@ repositories {
 dependencies {
     testImplementation(kotlin("test"))
 
-    api("org.telegram:telegrambots-longpolling:7.2.1")
-    api("org.telegram:telegrambots-webhook:7.2.1")
-    api("org.telegram:telegrambots-client:7.2.1")
+    implementation("org.telegram:telegrambots-longpolling:7.2.1")
+    implementation("org.telegram:telegrambots-webhook:7.2.1")
+    implementation("org.telegram:telegrambots-client:7.2.1")
     api("org.telegram:telegrambots-meta:7.2.1")
 
     implementation("org.slf4j:slf4j-api:2.0.13")
@@ -34,6 +34,13 @@ kotlin {
     jvmToolchain(17)
 }
 
+idea {
+    module {
+        isDownloadJavadoc = true
+        isDownloadSources = true
+    }
+}
+
 tasks.register<Jar>("dokkaJavadocJar") {
     dependsOn(tasks.dokkaJavadoc)
     from(tasks.dokkaJavadoc.flatMap { it.outputDirectory })
@@ -43,13 +50,6 @@ tasks.register<Jar>("dokkaJavadocJar") {
 tasks.register<Jar>("sourcesJar") {
     from(sourceSets.main.get().allSource)
     archiveClassifier.set("sources")
-}
-
-idea {
-    module {
-        isDownloadJavadoc = true
-        isDownloadSources = true
-    }
 }
 
 configurations {
