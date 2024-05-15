@@ -146,7 +146,7 @@ class LongPollingBot(private val options: BotCreationOptions) : Bot(options) {
         }
 
         private fun afterUpdate(update: Update, type: String, listener: Listener?) {
-            (listener ?: CommandManager.Handle(bot.telegramClient)).afterUpdate(update, bot.telegramClient)
+            (listener ?: CommandManager.Handle()).afterUpdate(update, bot.telegramClient)
 
             if (!bot.options.logUpdates) return
             bot.logger.info("${update.updateId} - $type")
