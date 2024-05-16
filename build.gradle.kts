@@ -57,12 +57,14 @@ subprojects {
     }
 
     tasks.register<Jar>("dokkaJavadocJar") {
+        group = "jar"
         dependsOn(tasks.dokkaJavadoc)
         from(tasks.dokkaJavadoc.flatMap { it.outputDirectory })
         archiveClassifier.set("javadoc")
     }
 
     tasks.register<Jar>("sourcesJar") {
+        group = "jar"
         from(sourceSets.main.get().allSource)
         archiveClassifier.set("sources")
     }
@@ -82,6 +84,12 @@ subprojects {
                     password = System.getenv("GITHUB_TOKEN")
                 }
             }
+        }
+    }
+
+    tasks.withType<PublishToMavenRepository> {
+        onlyIf {
+            !project.version.toString().endsWith("-SNAPSHOT")
         }
     }
 }

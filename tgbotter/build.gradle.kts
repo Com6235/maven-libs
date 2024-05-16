@@ -1,5 +1,5 @@
 group = "io.github.com6235"
-version = "1.0.3"
+version = "1.0.4-SNAPSHOT"
 
 val telegramVersion = "7.2.1"
 
@@ -53,9 +53,9 @@ publishing {
                     }
                 }
                 scm {
-                    connection = "scm:git:git://github.com/Com6235/tgBotter.git"
-                    developerConnection = "scm:git:ssh://github.com:Com6235/tgBotter.git"
-                    url = "https://github.com/Com6235/tgBotter"
+                    connection = "scm:git:git://github.com/Com6235/maven-libs.git"
+                    developerConnection = "scm:git:ssh://github.com:Com6235/maven-libs.git"
+                    url = "https://github.com/Com6235/maven-libs"
                 }
             }
         }
