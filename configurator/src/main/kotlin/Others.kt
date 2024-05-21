@@ -3,10 +3,18 @@ package io.github.com6235.configurator
 import kotlinx.serialization.KSerializer
 import java.io.InputStream
 
-class FileExtensions<T : Any>(serializer: KSerializer<T>) {
+/**
+ * Class for managing data formats.
+ * Use [addFormat] to add a pair of a format (just a file extension, like "json", "toml", "yaml") and a class,
+ * that implements [Loader].
+ *
+ * @see ConfigLoader
+ * @see Loader
+ */
+class FileFormats<T : Any>(serializer: KSerializer<T>) {
     @JvmField
-    val extensions: MutableMap<List<String>, Loader<T>> = mutableMapOf()
-    
+    val formats: MutableMap<List<String>, Loader<T>> = mutableMapOf()
+
     private val defaults = mapOf(
         listOf("json") to JsonLoader(serializer),
         listOf("yaml") to YamlLoader(serializer),
@@ -16,19 +24,22 @@ class FileExtensions<T : Any>(serializer: KSerializer<T>) {
     )
 
     init {
-        extensions.putAll(defaults)
+        formats.putAll(defaults)
     }
 
-    fun findExtension(extension: String): Loader<T>? =
-        extensions.entries.firstOrNull { it.key.contains(extension.lowercase()) }?.value
+    fun findFormat(extension: String): Loader<T>? =
+        formats.entries.firstOrNull { it.key.contains(extension.lowercase()) }?.value
 
-    fun addExtension(extension: List<String>, loader: Loader<T>) {
-        extensions[extension.map { it.lowercase() }] = loader
+    fun addFormat(extension: List<String>, loader: Loader<T>) {
+        formats[extension.map { it.lowercase() }] = loader
     }
 }
 
-data class Config<T>(val data: T)
-
+/**
+ *  Main class for creating custom loaders.
+ *
+ *  @see FileFormats
+ */
 abstract class Loader<T : Any>(protected val serializer: KSerializer<T>) {
     abstract fun load(stream: InputStream): T
 }

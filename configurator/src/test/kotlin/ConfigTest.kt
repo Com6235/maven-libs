@@ -43,7 +43,7 @@ class ConfigTest {
     @Test
     fun testLoadingHocon() {
         val stream = ConfigTest::class.java.getResourceAsStream("hocon.conf")!!
-        val s = ConfigLoader(Cocfig.serializer()).loadConfig(stream, "hocon").data
+        val s = ConfigLoader(Cocfig.serializer()).loadConfig(stream, "hocon")
 
         assertEquals(19, s.ktor.biba)
         assertEquals("enadled", s.aftor.befor.nwo.`uwu-mode`)
@@ -52,7 +52,7 @@ class ConfigTest {
     @Test
     fun testLoadingJson() {
         val stream = ConfigTest::class.java.getResourceAsStream("json.json")!!
-        val s = ConfigLoader(Json.serializer()).loadConfig(stream, "json").data
+        val s = ConfigLoader(Json.serializer()).loadConfig(stream, "json")
 
         assertEquals(21, s.users.first { it.name == "Beberich" }.age)
         assertEquals(2, s.users_count)
@@ -61,7 +61,7 @@ class ConfigTest {
     @Test
     fun testLoadingProperties() {
         val stream = ConfigTest::class.java.getResourceAsStream("props.properties")!!
-        val s = ConfigLoader(Properties.serializer()).loadConfig(stream, "properties").data
+        val s = ConfigLoader(Properties.serializer()).loadConfig(stream, "properties")
 
         assertEquals("kartofka", s.potato)
         assertEquals("cmex", s.`fun`)
@@ -70,7 +70,7 @@ class ConfigTest {
     @Test
     fun testLoadingYaml() {
         val stream = ConfigTest::class.java.getResourceAsStream("yaml.yaml")!!
-        val s = ConfigLoader(Yaml.serializer()).loadConfig(stream, "yaml").data
+        val s = ConfigLoader(Yaml.serializer()).loadConfig(stream, "yaml")
 
         assertEquals("Test", s.name)
         assertEquals("my bebera", s.jobs["test"]?.`runs-on`)
@@ -79,11 +79,10 @@ class ConfigTest {
     @Test
     fun testLoadingToml() {
         val stream = ConfigTest::class.java.getResourceAsStream("toml.toml")!!
-        val s = ConfigLoader(Toml.serializer()).loadConfig(stream, "toml").data
+        val s = ConfigLoader(Toml.serializer()).loadConfig(stream, "toml")
 
         assertEquals("niba", s.name)
         assertEquals("01022012", s.account.password)
         assertEquals(1, s.account.dateOfBirth[0])
     }
-
 }
