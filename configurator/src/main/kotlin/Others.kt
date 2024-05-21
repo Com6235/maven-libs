@@ -14,7 +14,7 @@ import java.io.InputStream
 class FileFormats<T : Any>(serializer: KSerializer<T>) {
     @JvmField
     val formats: MutableMap<List<String>, Loader<T>> = mutableMapOf()
-
+    
     private val defaults = mapOf(
         listOf("json") to JsonLoader(serializer),
         listOf("yaml") to YamlLoader(serializer),
@@ -41,5 +41,13 @@ class FileFormats<T : Any>(serializer: KSerializer<T>) {
  *  @see FileFormats
  */
 abstract class Loader<T : Any>(protected val serializer: KSerializer<T>) {
+    /**
+     * Function, that deserializes the data into the given type [T]
+     */
     abstract fun load(stream: InputStream): T
+
+    /**
+     * Function, that serializes the data in type [T] into a String
+     */
+    abstract fun save(data: T): String
 }

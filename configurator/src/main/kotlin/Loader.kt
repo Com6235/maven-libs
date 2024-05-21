@@ -1,12 +1,11 @@
 package io.github.com6235.configurator
 
 import kotlinx.serialization.KSerializer
-import java.io.*
+import java.io.ByteArrayInputStream
+import java.io.InputStream
+import java.io.NotSerializableException
 import java.nio.file.Path
-import kotlin.io.path.exists
-import kotlin.io.path.extension
-import kotlin.io.path.inputStream
-import kotlin.io.path.isDirectory
+import kotlin.io.path.*
 
 /**
  * Loader for configs, add custom loaders using [FileFormats.addFormat].
@@ -36,6 +35,17 @@ class ConfigLoader<T : Any>(serializer: KSerializer<T>) {
     }
 
     /**
+     * Loads a config from string.
+     *
+     * @param string The string with data
+     * @param fileFormat Format of data for selecting the data loader
+     */
+    fun loadConfig(string: String, fileFormat: String): T {
+        val loader = fileFormats.findFormat(fileFormat) ?: throw NotSerializableException()
+        return loader.load(ByteArrayInputStream(string.toByteArray()))
+    }
+
+    /**
      * Loads a config from a file.
      *
      * @param path Path of the file
@@ -44,5 +54,32 @@ class ConfigLoader<T : Any>(serializer: KSerializer<T>) {
     fun loadConfig(path: Path): T? {
         if (!path.exists() || path.isDirectory()) return null
         return loadConfig(path.inputStream(), path.extension)
+    }
+
+    /**
+     * Serialize a config into a string.
+     *
+     * @param data Data to serialize
+     * @param format Format to serialize the data into
+     * @return Serialized string
+     */
+    fun saveConfig(data: T, format: String): String {
+        val loader = fileFormats.findFormat(format) ?: throw NotSerializableException()
+        return loader.save(data)
+    }
+
+    /**
+     * Save a config into a file.
+     *
+     * @param data Data to serialize
+     * @param path Path of the file
+     */
+    fun saveConfig(data: T, path: Path) {
+        if (path.isDirectory()) return
+        if (!path.exists()) {
+            path.createFile()
+        }
+        val serialized = saveConfig(data, path.extension)
+        path.writeText(serialized)
     }
 }
