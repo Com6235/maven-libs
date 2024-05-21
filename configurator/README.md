@@ -68,12 +68,13 @@ import io.github.com6235.configurator.ConfigLoader
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class Config(val helpPages: List<String>)
+data class Config(val name: String)
 
 fun main() {
-    val configStream = this::class.java.getResourceAsStream("config.json")!! // change to any format, that it supports
-    val config = ConfigLoader(Config.serializer()).loadConfig(configStream, "json") // change to any format, that it supports
-    
-    println(config.helpPages)
+    val loader = ConfigLoader(Config.serializer())
+    while (true) {
+        val s = readln()
+        loader.saveConfig(Config(s), Path("./name.json"))
+    }
 }
 ```
