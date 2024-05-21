@@ -3,7 +3,14 @@
 Thing to automatically load config from different formats. Supports custom formats. 
 Uses [kotlinx.serialization](https://github.com/Kotlin/kotlinx.serialization).
 
-Currently, it supports JSON (`json`), HOCON (`conf`, `hocon`), TOML (`toml`), YAML (`yaml`) and Properties (`properties`)
+Currently, it supports 
+[JSON](https://github.com/Kotlin/kotlinx.serialization/blob/master/formats/README.md#JSON) (`json`), 
+[HOCON](https://github.com/Kotlin/kotlinx.serialization/blob/master/formats/README.md#HOCON) (`conf`, `hocon`), 
+[TOML](https://github.com/Peanuuutz/tomlkt) (`toml`), 
+[YAML](https://github.com/charleskorn/kaml) (`yaml`) and
+[Properties](https://github.com/Kotlin/kotlinx.serialization/blob/master/formats/README.md#properties) (`properties`)
+
+Latest version: https://github.com/Com6235/maven-libs/packages/2156249
 
 ## Using as a dependency
 ### Maven
@@ -47,8 +54,25 @@ import kotlinx.serialization.Serializable
 data class Config(val helpPages: List<String>)
 
 fun main() {
-    val configStream = this::class.java.getResourceAsStream("config.json")!!
-    val config = ConfigLoader(Config.serializer()).loadConfig(configStream, "json") // change 
+    val configStream = this::class.java.getResourceAsStream("config.json")!! // change to any format, that it supports
+    val config = ConfigLoader(Config.serializer()).loadConfig(configStream, "json") // change to any format, that it supports
+    
+    println(config.helpPages)
+}
+```
+
+### Read from input and add to a JSON
+
+```kotlin
+import io.github.com6235.configurator.ConfigLoader
+import kotlinx.serialization.Serializable
+
+@Serializable
+data class Config(val helpPages: List<String>)
+
+fun main() {
+    val configStream = this::class.java.getResourceAsStream("config.json")!! // change to any format, that it supports
+    val config = ConfigLoader(Config.serializer()).loadConfig(configStream, "json") // change to any format, that it supports
     
     println(config.helpPages)
 }
