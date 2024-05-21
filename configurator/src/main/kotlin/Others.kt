@@ -42,7 +42,12 @@ class FileFormats<T : Any>(serializer: KSerializer<T>) {
  */
 abstract class Loader<T : Any>(protected val serializer: KSerializer<T>) {
     /**
-     * Main function, that deserializes the data into the given type [T]
+     * Function, that deserializes the data into the given type [T]
      */
     abstract fun load(stream: InputStream): T
+
+    /**
+     * Function, that serializes the data in type [T] into a String
+     */
+    abstract fun save(data: T): String
 }

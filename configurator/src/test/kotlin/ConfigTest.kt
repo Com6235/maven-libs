@@ -2,6 +2,8 @@ import io.github.com6235.configurator.ConfigLoader
 import kotlinx.serialization.Serializable
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
+import java.nio.file.Files
+import kotlin.io.path.Path
 
 // HOCON
 @Serializable
@@ -84,5 +86,18 @@ class ConfigTest {
         assertEquals("niba", s.name)
         assertEquals("01022012", s.account.password)
         assertEquals(1, s.account.dateOfBirth[0])
+    }
+
+    @Test
+    fun testSaving() {
+        val loader = ConfigLoader(Properties.serializer())
+        val data = Properties("funi", "patata")
+        loader.saveConfig(data, Path("./test.properties"))
+        val loading = loader.loadConfig(Path("./test.properties"))
+
+        assertEquals(data.potato, loading?.potato)
+        assertEquals(data.`fun`, loading?.`fun`)
+
+        Files.deleteIfExists(Path("./test.properties"))
     }
 }
