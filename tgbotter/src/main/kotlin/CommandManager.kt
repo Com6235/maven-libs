@@ -11,7 +11,7 @@ import org.telegram.telegrambots.meta.generics.TelegramClient
  * Manager for all commands. Runs commands first, before any other event
  */
 class CommandManager(private val bot: Bot) {
-    internal val handle = Handle(this.bot.telegramClient)
+    internal val handle = Handle()
     internal val commandRegex = Regex("[a-z0-9_]+")
 
     /**
@@ -29,7 +29,7 @@ class CommandManager(private val bot: Bot) {
         }
     }
 
-    internal class Handle(private val telegramClient: TelegramClient) : Listener {
+    internal class Handle : Listener {
         override fun onMessage(message: Message, telegramClient: TelegramClient) {
             val command = message.text.split(" ")
             val handler = commands.firstOrNull { "/" + it.name == command[0] } ?: return

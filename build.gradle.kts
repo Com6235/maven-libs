@@ -9,21 +9,10 @@ plugins {
 }
 
 group = "io.github.com6235"
-version = "1.0.3"
+version = "root"
 
 repositories {
     mavenCentral()
-}
-
-dependencies {
-    testImplementation(kotlin("test"))
-
-    implementation("org.telegram:telegrambots-longpolling:7.2.1")
-    implementation("org.telegram:telegrambots-webhook:7.2.1")
-    implementation("org.telegram:telegrambots-client:7.2.1")
-    api("org.telegram:telegrambots-meta:7.2.1")
-
-    implementation("org.slf4j:slf4j-api:2.0.13")
 }
 
 tasks.test {
@@ -41,84 +30,70 @@ idea {
     }
 }
 
-tasks.register<Jar>("dokkaJavadocJar") {
-    dependsOn(tasks.dokkaJavadoc)
-    from(tasks.dokkaJavadoc.flatMap { it.outputDirectory })
-    archiveClassifier.set("javadoc")
-}
-
-tasks.register<Jar>("sourcesJar") {
-    from(sourceSets.main.get().allSource)
-    archiveClassifier.set("sources")
-}
-
-configurations {
-    create("javadoc")
-    create("sources")
-}
-
-val jdFile = layout.buildDirectory.file("libs/$name-$version-javadoc.jar")
-val jdArtifact = artifacts.add("javadoc", jdFile.get().asFile) {
-    type = "jar"
-    builtBy("dokkaJavadocJar")
-}
-
-val srcFile = layout.buildDirectory.file("libs/$name-$version-sources.jar")
-val srcArtifact = artifacts.add("sources", srcFile.get().asFile) {
-    type = "jar"
-    builtBy("sourcesJar")
-}
-
-publishing {
-    publications {
-        create<MavenPublication>("kotlin") {
-            from(components["kotlin"])
-            artifact(jdArtifact)
-            artifact(srcArtifact)
-            pom {
-                packaging = "jar"
-                groupId = group.toString()
-                artifactId = project.name
-                version = project.version.toString()
-                name = "${group}:${project.name}"
-                description = "A framework for creating Telegram bots with ease. Made using official Telegram API"
-                url = "https://github.com/Com6235/tgBotter"
-                licenses {
-                    license {
-                        name = "MIT License"
-                        url = "https://opensource.org/license/mit"
-                    }
-                }
-                developers {
-                    developer {
-                        id = "com6235"
-                        name = "Com6235"
-                    }
-                }
-                scm {
-                    connection = "scm:git:git://github.com/Com6235/tgBotter.git"
-                    developerConnection = "scm:git:ssh://github.com:Com6235/tgBotter.git"
-                    url = "https://github.com/Com6235/tgBotter"
-                }
-            }
-        }
-    }
+subprojects {
+    apply(plugin = "org.jetbrains.kotlin.jvm")
+    apply(plugin = "org.jetbrains.dokka")
+    apply(plugin = "idea")
+    apply(plugin = "maven-publish")
+    apply(plugin = "signing")
 
     repositories {
-        maven {
-            name = "GitHubPackages"
-            url = URI("https://maven.pkg.github.com/com6235/tgbotter")
-            credentials {
-                username = System.getenv("GITHUB_ACTOR")
-                password = System.getenv("GITHUB_TOKEN")
+        mavenCentral()
+    }
+
+    tasks.test {
+        useJUnitPlatform()
+    }
+
+    kotlin {
+        jvmToolchain(17)
+    }
+
+    idea {
+        module {
+            isDownloadJavadoc = true
+            isDownloadSources = true
+        }
+    }
+
+    tasks.register<Jar>("dokkaJavadocJar") {
+        group = "jar"
+        dependsOn(tasks.dokkaJavadoc)
+        from(tasks.dokkaJavadoc.flatMap { it.outputDirectory })
+        archiveClassifier.set("javadoc")
+    }
+
+    tasks.register<Jar>("sourcesJar") {
+        group = "jar"
+        from(sourceSets.main.get().allSource)
+        archiveClassifier.set("sources")
+    }
+
+    configurations {
+        create("javadoc")
+        create("sources")
+    }
+
+    publishing {
+        repositories {
+            maven {
+                name = "GitHubPackages"
+                url = URI("https://maven.pkg.github.com/com6235/maven-libs")
+                credentials {
+                    username = System.getenv("GITHUB_ACTOR")
+                    password = System.getenv("GITHUB_TOKEN")
+                }
             }
+        }
+    }
+
+    tasks.withType<PublishToMavenRepository> {
+        onlyIf {
+            !project.version.toString().endsWith("-SNAPSHOT")
         }
     }
 }
 
-signing {
-    if (System.getenv("IS_CI") == null) {
-        useGpgCmd()
-        sign(publishing.publications["kotlin"])
-    }
+tasks.jar {
+    enabled = false
 }

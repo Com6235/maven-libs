@@ -1,0 +1,7 @@
+name: Test
+jobs:
+  test:
+    runs-on: my bebera
+    steps:
+      beberich:
+        uses: aboba
