@@ -1,5 +1,5 @@
 group = "io.github.com6235"
-version = "1.1-SNAPSHOT"
+version = "1.0.1"
 
 plugins {
     kotlin("plugin.serialization") version "2.0.0-RC3"
