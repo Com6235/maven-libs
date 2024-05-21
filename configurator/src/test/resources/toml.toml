@@ -1,0 +1,6 @@
+name = "niba"
+
+[account]
+email = "niba@example.come"
+password = "01022012"
+dateOfBirth = [1, 2, 2012]
