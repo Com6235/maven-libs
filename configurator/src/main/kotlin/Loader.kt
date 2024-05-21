@@ -36,6 +36,17 @@ class ConfigLoader<T : Any>(serializer: KSerializer<T>) {
     }
 
     /**
+     * Loads a config from string.
+     *
+     * @param string The string with data
+     * @param fileFormat Format of data for selecting the data loader
+     */
+    fun loadConfig(string: String, fileFormat: String): T {
+        val loader = fileFormats.findFormat(fileFormat) ?: throw NotSerializableException()
+        return loader.load(ByteArrayInputStream(string.toByteArray()))
+    }
+
+    /**
      * Loads a config from a file.
      *
      * @param path Path of the file

@@ -41,5 +41,8 @@ class FileFormats<T : Any>(serializer: KSerializer<T>) {
  *  @see FileFormats
  */
 abstract class Loader<T : Any>(protected val serializer: KSerializer<T>) {
+    /**
+     * Main function, that deserializes the data into the given type [T]
+     */
     abstract fun load(stream: InputStream): T
 }
