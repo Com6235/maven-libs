@@ -107,32 +107,3 @@ fun handleInfo(commandHandler: CommandHandler) {
     )
 }
 ```
-
-## Building from sources
-
-### Requirements
-
-- JDK 17
-- [GnuPG](https://www.gnupg.org/) (for signing publications)
-
-### Building the project
-
-Use commands
-```bash
-.\gradlew build
-.\gradlew sourcesJar
-.\gradlew dokkaJavadocJar
-```
-to build all the needed jar-files, or you can do:
-```bash
-.\gradlew signKotlinPublication
-```
-to automatically build and sign everything
-
-### Publishing to local Maven repository
-
-Use command
-```bash
-.\gradlew publishToMavenLocal
-```
-to publish all the [artifacts](#building-the-project) to your local Maven repository _(~/.m2/repository)_
