@@ -38,7 +38,8 @@ internal class HoconLoader<T : Any>(serializer: KSerializer<T>) : Loader<T>( ser
 
     @OptIn(ExperimentalSerializationApi::class)
     override fun save(data: T): String {
-        val serialized = Hocon.encodeToConfig(serializer, data).resolve().root().render(ConfigRenderOptions.defaults())
+        val renderOptions = ConfigRenderOptions.defaults().setOriginComments(false).setJson(false)
+        val serialized = Hocon.encodeToConfig(serializer, data).resolve().root().render(renderOptions)
         return serialized
     }
 }
