@@ -30,8 +30,8 @@ class FileFormats<T : Any>(serializer: KSerializer<T>) {
     fun findFormat(extension: String): Loader<T>? =
         formats.entries.firstOrNull { it.key.contains(extension.lowercase()) }?.value
 
-    fun addFormat(extension: List<String>, loader: Loader<T>) {
-        formats[extension.map { it.lowercase() }] = loader
+    fun addFormat(extensions: List<String>, loader: Loader<T>) {
+        formats[extensions.map { it.lowercase() }] = loader
     }
 }
 
