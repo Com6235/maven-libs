@@ -11,11 +11,11 @@ dependencies {
     testImplementation(kotlin("test"))
 
     api("org.jetbrains.kotlinx:kotlinx-serialization-json:$serializationVersion")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-hocon:$serializationVersion")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-properties:$serializationVersion")
-    implementation("com.charleskorn.kaml:kaml:0.59.0")
-    implementation("net.peanuuutz.tomlkt:tomlkt:0.3.7")
-    implementation("net.benwoodworth.knbt:knbt:0.11.5")
+    api("org.jetbrains.kotlinx:kotlinx-serialization-hocon:$serializationVersion")
+    api("org.jetbrains.kotlinx:kotlinx-serialization-properties:$serializationVersion")
+    api("com.charleskorn.kaml:kaml:0.59.0")
+    api("net.peanuuutz.tomlkt:tomlkt:0.3.7")
+    api("net.benwoodworth.knbt:knbt:0.11.5")
 }
 
 val jdFile = layout.buildDirectory.file("libs/$name-$version-javadoc.jar")
