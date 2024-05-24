@@ -73,6 +73,31 @@ class ConfigLoader<T : Any>(serializer: KSerializer<T>) {
     }
 
     /**
+     * Loads a config from a file using the specified loader.
+     *
+     * @param path Path of the file
+     * @param fileFormat Format of the file
+     * @return `null` if the path doesn't exist or is a directory. Else - deserialized data
+     */
+    fun loadConfig(path: Path, fileFormat: String): T? {
+        if (!path.exists() || path.isDirectory()) return null
+        val loader = fileFormats.findFormat(fileFormat) ?: return null
+        return loadConfig(path.inputStream(), loader)
+    }
+
+    /**
+     * Loads a config from a file using the specified loader.
+     *
+     * @param path Path of the file
+     * @param loader Data loader for the file
+     * @return `null` if the path doesn't exist or is a directory. Else - deserialized data
+     */
+    fun loadConfig(path: Path, loader: Loader<T>): T? {
+        if (!path.exists() || path.isDirectory()) return null
+        return loadConfig(path.inputStream(), loader)
+    }
+
+    /**
      * Serialize a config into a string.
      *
      * @param data Data to serialize
@@ -105,6 +130,36 @@ class ConfigLoader<T : Any>(serializer: KSerializer<T>) {
             path.createFile()
         }
         val serialized = saveConfig(data, path.extension)
+        path.writeText(serialized)
+    }
+
+    /**
+     * Save a config into a file.
+     *
+     * @param data Data to serialize
+     * @param path Path of the file
+     */
+    fun saveConfig(data: T, path: Path, format: String) {
+        if (path.isDirectory()) return
+        if (!path.exists()) {
+            path.createFile()
+        }
+        val serialized = saveConfig(data, format)
+        path.writeText(serialized)
+    }
+
+    /**
+     * Save a config into a file.
+     *
+     * @param data Data to serialize
+     * @param path Path of the file
+     */
+    fun saveConfig(data: T, path: Path, loader: Loader<T>) {
+        if (path.isDirectory()) return
+        if (!path.exists()) {
+            path.createFile()
+        }
+        val serialized = saveConfig(data, loader)
         path.writeText(serialized)
     }
 }
