@@ -24,6 +24,46 @@ After you added the repository, you can start using my package by adding this to
 </dependency>
 ```
 
+And don't forget to add `kotlinx.serialization` plugin to your `plugins`
+
+```xml
+<properties>
+    <kotlin.version>2.0.0-RC3</kotlin.version>
+    <serialization.version>1.7.0-RC</serialization.version>
+</properties>
+<!-- other things -->
+<build>
+    <plugins>
+        <plugin>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlin-maven-plugin</artifactId>
+            <version>${kotlin.version}</version>
+            <executions>
+                <execution>
+                    <id>compile</id>
+                    <phase>compile</phase>
+                    <goals>
+                        <goal>compile</goal>
+                    </goals>
+                </execution>
+            </executions>
+            <configuration>
+                <compilerPlugins>
+                    <plugin>kotlinx-serialization</plugin>
+                </compilerPlugins>
+            </configuration>
+            <dependencies>
+                <dependency>
+                    <groupId>org.jetbrains.kotlin</groupId>
+                    <artifactId>kotlin-maven-serialization</artifactId>
+                    <version>${kotlin.version}</version>
+                </dependency>
+            </dependencies>
+        </plugin>
+    </plugins>
+</build>
+```
+
 ### Gradle
 
 After you added the repository, you can start using my package by adding this to `dependencies`:
@@ -39,6 +79,22 @@ In `build.gradle`:
 ```groovy
 dependencies {
     implementation 'io.github.com6235:configurator:${your desired version}'
+}
+```
+
+And don't forget to add `kotlinx.serialization` plugin to your `plugins`
+
+In `build.gradle.kts`:
+```kotlin
+plugins {
+    kotlin("plugin.serialization") version "2.0.0-RC3"
+}
+```
+
+In `build.gradle`:
+```groovy
+plugins {
+    id 'org.jetbrains.kotlin.plugin.serialization' version '2.0.0-RC3'
 }
 ```
 
