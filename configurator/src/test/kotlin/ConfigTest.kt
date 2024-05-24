@@ -3,6 +3,7 @@ import kotlinx.serialization.Serializable
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import java.nio.file.Files
+import java.util.UUID
 import kotlin.io.path.Path
 
 // HOCON
@@ -40,6 +41,12 @@ data class Step(val uses: String)
 data class Toml(val name: String, val account: Account)
 @Serializable
 data class Account(val email: String, val password: String, val dateOfBirth: MutableList<Int>)
+
+// NBT
+@Serializable
+data class Nbt(val players: Map<String, Player>)
+@Serializable
+data class Player(val name: String, val uuid: String)
 
 class ConfigTest {
     @Test
@@ -99,5 +106,23 @@ class ConfigTest {
         assertEquals(data.`fun`, loading?.`fun`)
 
         Files.deleteIfExists(Path("./test.properties"))
+    }
+
+    @Test
+    fun testNBT() {
+        val loader = ConfigLoader(Nbt.serializer())
+        val uuid1 = UUID.randomUUID().toString()
+        val uuid2 = UUID.randomUUID().toString()
+        val data = Nbt(mapOf(
+            "Alex" to Player("Alex", uuid1),
+            "Steve" to Player("Steve", uuid2)
+        ))
+        loader.saveConfig(data, Path("./test.nbt"))
+        val loading = loader.loadConfig(Path("./test.nbt"))
+
+        assertEquals(data.players["Alex"], loading!!.players["Alex"])
+        assertEquals(data.players["Steve"], loading.players["Steve"])
+
+        Files.deleteIfExists(Path("./test.nbt"))
     }
 }

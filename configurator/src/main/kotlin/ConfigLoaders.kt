@@ -10,6 +10,10 @@ import kotlinx.serialization.KSerializer
 import kotlinx.serialization.hocon.Hocon
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromStream
+import net.benwoodworth.knbt.Nbt
+import net.benwoodworth.knbt.NbtCompression
+import net.benwoodworth.knbt.NbtVariant
+import net.benwoodworth.knbt.decodeFromStream
 import net.peanuuutz.tomlkt.Toml
 import java.io.InputStream
 import java.nio.charset.Charset
@@ -75,4 +79,13 @@ internal class TomlLoader<T : Any>(serializer: KSerializer<T>) : Loader<T>(seria
         Toml.decodeFromString(serializer, stream.readBytes().toString(Charset.defaultCharset()))
 
     override fun save(data: T): String = Toml.encodeToString(serializer, data)
+}
+
+internal class NbtLoader<T : Any>(
+    serializer: KSerializer<T>,
+    private val nbt: Nbt = Nbt { compression = NbtCompression.None; variant = NbtVariant.Java }
+) : Loader<T>(serializer) {
+    override fun load(stream: InputStream): T = nbt.decodeFromStream(serializer, stream)
+
+    override fun save(data: T): String = nbt.encodeToByteArray(serializer, data).toString(Charset.defaultCharset())
 }

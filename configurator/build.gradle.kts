@@ -15,6 +15,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-properties:$serializationVersion")
     implementation("com.charleskorn.kaml:kaml:0.59.0")
     implementation("net.peanuuutz.tomlkt:tomlkt:0.3.7")
+    implementation("net.benwoodworth.knbt:knbt:0.11.5")
 }
 
 val jdFile = layout.buildDirectory.file("libs/$name-$version-javadoc.jar")

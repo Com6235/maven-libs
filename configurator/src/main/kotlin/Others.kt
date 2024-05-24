@@ -21,6 +21,7 @@ class FileFormats<T : Any>(serializer: KSerializer<T>) {
         listOf("conf", "hocon") to HoconLoader(serializer),
         listOf("properties") to PropertiesLoader(serializer),
         listOf("toml") to TomlLoader(serializer),
+        listOf("nbt", "dat") to NbtLoader(serializer),
     )
 
     init {
