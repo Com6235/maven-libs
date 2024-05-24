@@ -47,7 +47,7 @@ dependencies {
 ### Print some info from resources
 
 ```kotlin
-import io.github.com6235.configurator.ConfigLoader
+import io.github.com6235.configurator.*
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -64,7 +64,7 @@ fun main() {
 ### Read from input and add to a JSON
 
 ```kotlin
-import io.github.com6235.configurator.ConfigLoader
+import io.github.com6235.configurator.*
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -75,6 +75,31 @@ fun main() {
     while (true) {
         val s = readln()
         loader.saveConfig(Config(s), Path("./name.json"))
+    }
+}
+```
+
+### Use custom serialization properties
+
+```kotlin
+import io.github.com6235.configurator.*
+import kotlinx.serialization.Serializable
+
+@Serializable
+data class Config(val name: String)
+
+fun main() {
+    val loader = ConfigLoader(Config.serializer())
+    while (true) {
+        val s = readln()
+        loader.saveConfig(
+            Config(s), 
+            Path("./name.nbt"), 
+            NbtLoader(
+                Config.serializer(), 
+                Nbt { compression = NbtCompression.Gzip; variant = NbtVariant.Bedrock }
+            )
+        )
     }
 }
 ```
