@@ -1,15 +1,14 @@
-name: Publish package to the Github Packages
+name: Publish everything
 on:
   push:
     branches:
       - main
 
 jobs:
-  publish-and-test:
+  dependency-graph:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-      packages: write
     steps:
       - name: Checkout dev branch
         uses: actions/checkout@v4
@@ -22,16 +21,27 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
 
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v3
-
       - name: Generate and submit dependency graph
         uses: gradle/actions/dependency-submission@v3
 
+  package:
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+    steps:
       - name: Checkout main branch
         uses: actions/checkout@v4
         with:
           ref: 'main'
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
 
       - name: Publish package
         run: ./gradlew publish
