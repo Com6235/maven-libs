@@ -46,6 +46,22 @@ class ConfigLoader<T : Any>(serializer: KSerializer<T>) {
     }
 
     /**
+     * Loads a config from stream.
+     *
+     * @param stream The stream with data
+     * @param loader Data loader
+     */
+    fun loadConfig(stream: InputStream, loader: Loader<T>): T = loader.load(stream)
+
+    /**
+     * Loads a config from string.
+     *
+     * @param string The string with data
+     * @param loader Data loader
+     */
+    fun loadConfig(string: String, loader: Loader<T>): T = loader.load(ByteArrayInputStream(string.toByteArray()))
+
+    /**
      * Loads a config from a file.
      *
      * @param path Path of the file
@@ -67,6 +83,15 @@ class ConfigLoader<T : Any>(serializer: KSerializer<T>) {
         val loader = fileFormats.findFormat(format) ?: throw NotSerializableException()
         return loader.save(data)
     }
+
+    /**
+     * Serialize a config into a string.
+     *
+     * @param data Data to serialize
+     * @param loader Data loader
+     * @return Serialized string
+     */
+    fun saveConfig(data: T, loader: Loader<T>): String = loader.save(data)
 
     /**
      * Save a config into a file.

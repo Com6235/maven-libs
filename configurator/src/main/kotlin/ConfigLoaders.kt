@@ -15,15 +15,15 @@ import java.io.InputStream
 import java.nio.charset.Charset
 import java.util.*
 
-internal class YamlLoader<T : Any>(serializer: KSerializer<T>) : Loader<T>(serializer) {
+internal class YamlLoader<T : Any>(
+    serializer: KSerializer<T>,
+    private val yaml: Yaml = Yaml()
+) : Loader<T>(serializer) {
     override fun load(stream: InputStream): T =
         yaml.decodeFromString(serializer, stream.readBytes().toString(Charset.defaultCharset()))
 
     override fun save(data: T): String = yaml.encodeToString(serializer, data)
 
-    companion object {
-        val yaml = Yaml()
-    }
 }
 
 internal class HoconLoader<T : Any>(serializer: KSerializer<T>) : Loader<T>( serializer) {
@@ -38,7 +38,7 @@ internal class HoconLoader<T : Any>(serializer: KSerializer<T>) : Loader<T>( ser
 
     @OptIn(ExperimentalSerializationApi::class)
     override fun save(data: T): String {
-        val renderOptions = ConfigRenderOptions.defaults().setOriginComments(false).setJson(false)
+        val renderOptions = ConfigRenderOptions.defaults().setOriginComments(false).setJson(false).setFormatted(true)
         val serialized = Hocon.encodeToConfig(serializer, data).resolve().root().render(renderOptions)
         return serialized
     }
@@ -60,17 +60,14 @@ internal class PropertiesLoader<T : Any>(serializer: KSerializer<T>) : Loader<T>
     }
 }
 
-internal class JsonLoader<T : Any>(serializer: KSerializer<T>) : Loader<T>(serializer) {
+internal class JsonLoader<T : Any>(
+    serializer: KSerializer<T>,
+    private val json: Json = Json { prettyPrint = true }
+) : Loader<T>(serializer) {
     @OptIn(ExperimentalSerializationApi::class)
     override fun load(stream: InputStream): T = json.decodeFromStream(serializer, stream)
 
     override fun save(data: T): String = json.encodeToString(serializer, data)
-
-    companion object {
-        val json = Json {
-            prettyPrint = true
-        }
-    }
 }
 
 internal class TomlLoader<T : Any>(serializer: KSerializer<T>) : Loader<T>(serializer) {
