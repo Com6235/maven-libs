@@ -4,8 +4,6 @@ version = "1.0.4-SNAPSHOT"
 val telegramVersion = "7.2.1"
 
 dependencies {
-    testImplementation(kotlin("test"))
-
     implementation("org.telegram:telegrambots-longpolling:$telegramVersion")
     implementation("org.telegram:telegrambots-webhook:$telegramVersion")
     implementation("org.telegram:telegrambots-client:$telegramVersion")

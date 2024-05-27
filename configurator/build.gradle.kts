@@ -8,8 +8,6 @@ plugins {
 val serializationVersion = "1.6.3"
 
 dependencies {
-    testImplementation(kotlin("test"))
-
     api("org.jetbrains.kotlinx:kotlinx-serialization-json:$serializationVersion")
     api("org.jetbrains.kotlinx:kotlinx-serialization-hocon:$serializationVersion")
     api("org.jetbrains.kotlinx:kotlinx-serialization-properties:$serializationVersion")
