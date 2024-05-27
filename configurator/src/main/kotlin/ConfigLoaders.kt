@@ -30,17 +30,19 @@ class YamlLoader<T : Any>(
 
 }
 
-class HoconLoader<T : Any>(serializer: KSerializer<T>) : Loader<T>( serializer) {
-    @OptIn(ExperimentalSerializationApi::class)
+@OptIn(ExperimentalSerializationApi::class)
+class HoconLoader<T : Any>(
+    serializer: KSerializer<T>,
+    private val hocon: Hocon = Hocon
+) : Loader<T>( serializer) {
     override fun load(stream: InputStream): T {
         val conf = ConfigFactory.parseString(
             stream.readBytes().toString(Charset.defaultCharset()),
             ConfigParseOptions.defaults().setSyntax(ConfigSyntax.CONF)
         )
-        return Hocon.decodeFromConfig(serializer, conf)
+        return hocon.decodeFromConfig(serializer, conf)
     }
 
-    @OptIn(ExperimentalSerializationApi::class)
     override fun save(data: T): String {
         val renderOptions = ConfigRenderOptions.defaults().setOriginComments(false).setJson(false).setFormatted(true)
         val serialized = Hocon.encodeToConfig(serializer, data).resolve().root().render(renderOptions)
