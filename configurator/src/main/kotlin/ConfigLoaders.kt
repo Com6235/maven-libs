@@ -19,7 +19,7 @@ import java.io.InputStream
 import java.nio.charset.Charset
 import java.util.*
 
-internal class YamlLoader<T : Any>(
+class YamlLoader<T : Any>(
     serializer: KSerializer<T>,
     private val yaml: Yaml = Yaml()
 ) : Loader<T>(serializer) {
@@ -30,7 +30,7 @@ internal class YamlLoader<T : Any>(
 
 }
 
-internal class HoconLoader<T : Any>(serializer: KSerializer<T>) : Loader<T>( serializer) {
+class HoconLoader<T : Any>(serializer: KSerializer<T>) : Loader<T>( serializer) {
     @OptIn(ExperimentalSerializationApi::class)
     override fun load(stream: InputStream): T {
         val conf = ConfigFactory.parseString(
@@ -48,7 +48,7 @@ internal class HoconLoader<T : Any>(serializer: KSerializer<T>) : Loader<T>( ser
     }
 }
 
-internal class PropertiesLoader<T : Any>(serializer: KSerializer<T>) : Loader<T>(serializer) {
+class PropertiesLoader<T : Any>(serializer: KSerializer<T>) : Loader<T>(serializer) {
     @OptIn(ExperimentalSerializationApi::class)
     override fun load(stream: InputStream): T {
         val properties = Properties()
@@ -64,7 +64,7 @@ internal class PropertiesLoader<T : Any>(serializer: KSerializer<T>) : Loader<T>
     }
 }
 
-internal class JsonLoader<T : Any>(
+class JsonLoader<T : Any>(
     serializer: KSerializer<T>,
     private val json: Json = Json { prettyPrint = true }
 ) : Loader<T>(serializer) {
@@ -74,14 +74,14 @@ internal class JsonLoader<T : Any>(
     override fun save(data: T): String = json.encodeToString(serializer, data)
 }
 
-internal class TomlLoader<T : Any>(serializer: KSerializer<T>) : Loader<T>(serializer) {
+class TomlLoader<T : Any>(serializer: KSerializer<T>) : Loader<T>(serializer) {
     override fun load(stream: InputStream): T =
         Toml.decodeFromString(serializer, stream.readBytes().toString(Charset.defaultCharset()))
 
     override fun save(data: T): String = Toml.encodeToString(serializer, data)
 }
 
-internal class NbtLoader<T : Any>(
+class NbtLoader<T : Any>(
     serializer: KSerializer<T>,
     private val nbt: Nbt = Nbt { compression = NbtCompression.None; variant = NbtVariant.Java }
 ) : Loader<T>(serializer) {
