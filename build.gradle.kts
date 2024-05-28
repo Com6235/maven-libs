@@ -1,5 +1,5 @@
-import java.net.URI
 import org.jlleitschuh.gradle.ktlint.reporter.ReporterType
+import java.net.URI
 
 plugins {
     kotlin("jvm") version "1.9.24"

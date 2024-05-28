@@ -39,7 +39,7 @@ publishing {
                 groupId = group.toString()
                 artifactId = project.name
                 version = project.version.toString()
-                name = "${group}:${project.name}"
+                name = "$group:${project.name}"
                 description = "Thing to automatically load configs, supports creating custom loaders"
                 url = "https://github.com/Com6235/maven-libs"
                 licenses {

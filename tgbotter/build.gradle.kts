@@ -35,7 +35,7 @@ publishing {
                 groupId = group.toString()
                 artifactId = project.name
                 version = project.version.toString()
-                name = "${group}:${project.name}"
+                name = "$group:${project.name}"
                 description = "A framework for creating Telegram bots with ease. Made using official Telegram API"
                 url = "https://github.com/Com6235/maven-libs"
                 licenses {
