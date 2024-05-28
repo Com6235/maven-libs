@@ -1,5 +1,6 @@
 package io.github.com6235.configurator
 
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
 import java.io.InputStream
 
@@ -14,7 +15,8 @@ import java.io.InputStream
 class FileFormats<T : Any>(serializer: KSerializer<T>) {
     @JvmField
     val formats: MutableMap<List<String>, Loader<T>> = mutableMapOf()
-    
+
+    @OptIn(ExperimentalSerializationApi::class)
     private val defaults = mapOf(
         listOf("json") to JsonLoader(serializer),
         listOf("yaml") to YamlLoader(serializer),

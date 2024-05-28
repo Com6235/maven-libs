@@ -21,9 +21,10 @@ class CommandManager(private val bot: Bot) {
         Handle.commands.addAll(commands)
         for (command in commands) {
             if (commandRegex.matchEntire(command.name) == null) {
-                bot.logger.error("${command.name} has an invalid name! " +
+                bot.logger.error(
+                    "${command.name} has an invalid name! " +
                         "Command's name should contain only lowercase english letters, digits and underscores. " +
-                        "${command.name} will not be registered as a valid command in Telegram command list."
+                        "${command.name} will not be registered as a valid command in Telegram command list.",
                 )
             }
         }

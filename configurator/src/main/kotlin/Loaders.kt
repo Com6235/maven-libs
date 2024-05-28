@@ -21,24 +21,23 @@ import java.util.*
 
 class YamlLoader<T : Any>(
     serializer: KSerializer<T>,
-    private val yaml: Yaml = Yaml()
+    private val yaml: Yaml = Yaml(),
 ) : Loader<T>(serializer) {
     override fun load(stream: InputStream): T =
         yaml.decodeFromString(serializer, stream.readBytes().toString(Charset.defaultCharset()))
 
     override fun save(data: T): String = yaml.encodeToString(serializer, data)
-
 }
 
 @OptIn(ExperimentalSerializationApi::class)
 class HoconLoader<T : Any>(
     serializer: KSerializer<T>,
-    private val hocon: Hocon = Hocon
-) : Loader<T>( serializer) {
+    private val hocon: Hocon = Hocon,
+) : Loader<T>(serializer) {
     override fun load(stream: InputStream): T {
         val conf = ConfigFactory.parseString(
             stream.readBytes().toString(Charset.defaultCharset()),
-            ConfigParseOptions.defaults().setSyntax(ConfigSyntax.CONF)
+            ConfigParseOptions.defaults().setSyntax(ConfigSyntax.CONF),
         )
         return hocon.decodeFromConfig(serializer, conf)
     }
@@ -68,7 +67,7 @@ class PropertiesLoader<T : Any>(serializer: KSerializer<T>) : Loader<T>(serializ
 
 class JsonLoader<T : Any>(
     serializer: KSerializer<T>,
-    private val json: Json = Json { prettyPrint = true }
+    private val json: Json = Json { prettyPrint = true },
 ) : Loader<T>(serializer) {
     @OptIn(ExperimentalSerializationApi::class)
     override fun load(stream: InputStream): T = json.decodeFromStream(serializer, stream)
@@ -85,7 +84,10 @@ class TomlLoader<T : Any>(serializer: KSerializer<T>) : Loader<T>(serializer) {
 
 class NbtLoader<T : Any>(
     serializer: KSerializer<T>,
-    private val nbt: Nbt = Nbt { compression = NbtCompression.None; variant = NbtVariant.Java }
+    private val nbt: Nbt = Nbt {
+        compression = NbtCompression.None
+        variant = NbtVariant.Java
+    },
 ) : Loader<T>(serializer) {
     override fun load(stream: InputStream): T = nbt.decodeFromStream(serializer, stream)
 

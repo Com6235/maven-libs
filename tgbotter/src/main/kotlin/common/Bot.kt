@@ -38,8 +38,9 @@ abstract class Bot(private val options: BotCreationOptions) {
                 commandsToSend.add(BotCommand(command.name, command.description))
             }
         }
-        if (commandsToSend.isNotEmpty() && autoSetCommands)
+        if (commandsToSend.isNotEmpty() && autoSetCommands) {
             telegramClient.execute(SetMyCommands.builder().commands(commandsToSend).build())
+        }
 
         val name: String = try {
             telegramClient.execute(GetMyName.builder().build()).name
@@ -53,26 +54,31 @@ abstract class Bot(private val options: BotCreationOptions) {
             telegramClient.execute(GetMyShortDescription.builder().build()).shortDescription
         } catch (_: Exception) { options.botName ?: "" }
 
-        if (options.botName != null && options.botName != name)
+        if (options.botName != null && options.botName != name) {
             telegramClient.execute(SetMyName.builder().name(options.botName).build())
+        }
 
-        if (options.botDescription != null && options.botDescription != description)
+        if (options.botDescription != null && options.botDescription != description) {
             telegramClient.execute(
                 SetMyDescription.builder()
-                .description(options.botDescription)
-                .build()
+                    .description(options.botDescription)
+                    .build(),
             )
-        if (options.botShortDescription != null && options.botShortDescription != shortDescription)
+        }
+        if (options.botShortDescription != null && options.botShortDescription != shortDescription) {
             telegramClient.execute(
                 SetMyShortDescription.builder()
-                .shortDescription(options.botShortDescription)
-                .build()
+                    .shortDescription(options.botShortDescription)
+                    .build(),
             )
+        }
 
         if (hookStopToShutdown) {
-            Runtime.getRuntime().addShutdownHook(Thread {
-                stop()
-            })
+            Runtime.getRuntime().addShutdownHook(
+                Thread {
+                    stop()
+                },
+            )
         }
     }
 
@@ -83,7 +89,8 @@ abstract class Bot(private val options: BotCreationOptions) {
      */
     fun addListener(vararg listener: Listener) { this.listeners.addAll(listener) }
     internal fun getListeners(): MutableList<Listener> {
-        val s = mutableListOf<Listener>(); s.addAll(this.listeners)
+        val s = mutableListOf<Listener>()
+        s.addAll(this.listeners)
         return s
     }
 

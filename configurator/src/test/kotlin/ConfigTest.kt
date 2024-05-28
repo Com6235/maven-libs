@@ -9,18 +9,23 @@ import kotlin.io.path.Path
 // HOCON
 @Serializable
 data class Cocfig(val ktor: KtorCocfig, val aftor: AftorCocfig)
+
 @Serializable
 data class KtorCocfig(val biba: Int)
+
 @Serializable
 data class AftorCocfig(val befor: BeforAftorCocfig)
+
 @Serializable
 data class BeforAftorCocfig(val nwo: NwoBeforAftorCocfig)
+
 @Serializable
 data class NwoBeforAftorCocfig(val `uwu-mode`: String)
 
 // JSON
 @Serializable
 data class Json(val users: List<User>, val users_count: Int)
+
 @Serializable
 data class User(val name: String, val age: Int)
 
@@ -31,20 +36,24 @@ data class Properties(val potato: String, val `fun`: String)
 // YAML
 @Serializable
 data class Yaml(val name: String, val jobs: MutableMap<String, Job>)
+
 @Serializable
 data class Job(val `runs-on`: String, val steps: MutableMap<String, Step>)
+
 @Serializable
 data class Step(val uses: String)
 
 // TOML
 @Serializable
 data class Toml(val name: String, val account: Account)
+
 @Serializable
 data class Account(val email: String, val password: String, val dateOfBirth: MutableList<Int>)
 
 // NBT
 @Serializable
 data class Nbt(val players: Map<String, Player>)
+
 @Serializable
 data class Player(val name: String, val uuid: String)
 
@@ -113,10 +122,12 @@ class ConfigTest {
         val loader = ConfigLoader(Nbt.serializer())
         val uuid1 = UUID.randomUUID().toString()
         val uuid2 = UUID.randomUUID().toString()
-        val data = Nbt(mapOf(
-            "Alex" to Player("Alex", uuid1),
-            "Steve" to Player("Steve", uuid2)
-        ))
+        val data = Nbt(
+            mapOf(
+                "Alex" to Player("Alex", uuid1),
+                "Steve" to Player("Steve", uuid2),
+            ),
+        )
         loader.saveConfig(data, Path("./test.nbt"))
         val loading = loader.loadConfig(Path("./test.nbt"))
 
