@@ -7,7 +7,7 @@ plugins {
     idea
     `maven-publish`
     signing
-    id("org.jlleitschuh.gradle.ktlint") version "11.5.0"
+    id("org.jlleitschuh.gradle.ktlint") version "12.1.1"
 }
 
 group = "io.github.com6235"
@@ -64,7 +64,7 @@ subprojects {
     }
 
     ktlint {
-        version.set("0.50.0")
+        version.set("1.2.1")
         debug.set(true)
         verbose.set(true)
         android.set(false)
@@ -120,7 +120,7 @@ tasks.jar {
 }
 
 ktlint {
-    version.set("0.50.0")
+    version.set("1.2.1")
     debug.set(true)
     verbose.set(true)
     android.set(false)
