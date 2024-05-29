@@ -22,22 +22,40 @@ import org.telegram.telegrambots.meta.generics.TelegramClient
  */
 interface Listener {
     fun onBusinessConnection(businessConnection: BusinessConnection, telegramClient: TelegramClient) {}
+
     fun onBusinessMessage(businessMessage: Message, telegramClient: TelegramClient) {}
+
     fun onCallbackQuery(callbackQuery: CallbackQuery, telegramClient: TelegramClient) {}
+
     fun onChannelPost(channelPost: Message, telegramClient: TelegramClient) {}
+
     fun onChatJoinRequest(chatJoinRequest: ChatJoinRequest, telegramClient: TelegramClient) {}
+
     fun onChatMember(chatMember: ChatMemberUpdated, telegramClient: TelegramClient) {}
+
     fun onChosenInlineQuery(chosenInlineQuery: ChosenInlineQuery, telegramClient: TelegramClient) {}
+
     fun onDeletedBusinessMessage(deletedBusinessMessages: BusinessMessagesDeleted, telegramClient: TelegramClient) {}
+
     fun onEditedBusinessMessage(editedBusinessMessage: Message, telegramClient: TelegramClient) {}
+
     fun onEditedChannelPost(editedChannelPost: Message, telegramClient: TelegramClient) {}
+
     fun onEditedMessage(editedMessage: Message, telegramClient: TelegramClient) {}
+
     fun onInlineQuery(inlineQuery: InlineQuery, telegramClient: TelegramClient) {}
+
     fun onMessage(message: Message, telegramClient: TelegramClient) {}
+
     fun onMyChatMember(myChatMember: ChatMemberUpdated, telegramClient: TelegramClient) {}
+
     fun onPoll(poll: Poll, telegramClient: TelegramClient) {}
+
     fun onPollAnswer(pollAnswer: PollAnswer, telegramClient: TelegramClient) {}
+
     fun onPreCheckoutQuery(preCheckoutQuery: PreCheckoutQuery, telegramClient: TelegramClient) {}
+
     fun onShippingQuery(shippingQuery: ShippingQuery, telegramClient: TelegramClient) {}
+
     fun afterUpdate(update: Update, telegramClient: TelegramClient) {}
 }

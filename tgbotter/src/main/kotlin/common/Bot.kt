@@ -44,15 +44,21 @@ abstract class Bot(private val options: BotCreationOptions) {
 
         val name: String = try {
             telegramClient.execute(GetMyName.builder().build()).name
-        } catch (_: Exception) { options.botName ?: "" }
+        } catch (_: Exception) {
+            options.botName ?: ""
+        }
 
         val description: String = try {
             telegramClient.execute(GetMyDescription.builder().build()).description
-        } catch (_: Exception) { options.botDescription ?: "" }
+        } catch (_: Exception) {
+            options.botDescription ?: ""
+        }
 
         val shortDescription: String = try {
             telegramClient.execute(GetMyShortDescription.builder().build()).shortDescription
-        } catch (_: Exception) { options.botName ?: "" }
+        } catch (_: Exception) {
+            options.botName ?: ""
+        }
 
         if (options.botName != null && options.botName != name) {
             telegramClient.execute(SetMyName.builder().name(options.botName).build())
@@ -87,7 +93,8 @@ abstract class Bot(private val options: BotCreationOptions) {
      *
      * @see Listener
      */
-    fun addListener(vararg listener: Listener) { this.listeners.addAll(listener) }
+    fun addListener(vararg listener: Listener) = this.listeners.addAll(listener)
+
     internal fun getListeners(): MutableList<Listener> {
         val s = mutableListOf<Listener>()
         s.addAll(this.listeners)
